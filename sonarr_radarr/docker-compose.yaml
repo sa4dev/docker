@@ -1,0 +1,41 @@
+
+  version: '3.4'
+  services:
+    sonarr:
+      image: ghcr.io/linuxserver/sonarr
+      container_name: sonarr
+      environment:
+        - PUID=1000
+        - PGID=1000
+        - TZ=Europe/Minsk
+      volumes:
+        - /root/docker/sonarr_radarr/sonarr/data:/config
+        - /root/docker/sonarr_radarr/sonarr/tvseries:/tv
+        - /root/docker/sonarr_radarr/sonarr/downloadclient-downloads:/downloads
+      ports:
+        - 8989:8989
+      restart: unless-stopped
+   
+    radarr:
+      image: ghcr.io/linuxserver/radarr
+      container_name: radarr
+      environment:
+        - PUID=1000
+        - PGID=1000
+        - TZ=Europe/Minsk
+      volumes:
+        - /root/docker/sonarr_radarr/radarr/data:/config
+        - /root/docker/sonarr_radarr/radarr/movies:/movies
+        - /root/docker/sonarr_radarr/radarr/downloadclient-downloads:/downloads
+      ports:
+        - 7878:7878
+      restart: unless-stopped
+
+    webserver:
+      image: nginx
+      volumes:
+        - /root/docker/sonarr_radarr/nginx:/usr/share/nginx/html
+
+      ports:
+        - 82:80          
+
